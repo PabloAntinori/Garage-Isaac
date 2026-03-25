@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MEGALUX</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #c8ccd3;
+      color: #111;
+    }
+
+    .window-title {
+      text-align: center;
+      padding: 8px 0 4px;
+      font-weight: 700;
+      color: #4a4a4a;
+      font-size: 16px;
+    }
+
+    .app {
+      width: min(1280px, calc(100vw - 30px));
+      margin: 0 auto 24px;
+      background: #596c88;
+      padding: 18px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      color: #ff5a4d;
+      font-size: 56px;
+      font-weight: 800;
+      margin: 0;
+      line-height: 1;
+    }
+
+    .subtitle {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .mini-btn {
+      border: 0;
+      background: #efefef;
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .panel {
+      background: #c6ccd4;
+      padding: 22px 26px 18px;
+      min-height: 650px;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 34px;
+      align-items: start;
+    }
+
+    .visor-box {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-width: 0;
+    }
+
+    .visor-wrap {
+      width: 100%;
+      background: #a5acb6;
+      padding: 22px;
+      border-radius: 18px;
+    }
+
+    .visor {
+      height: 110px;
+      background:
+        radial-gradient(circle at center, rgba(255,0,0,0.08), rgba(0,0,0,0) 60%),
+        repeating-linear-gradient(
+          to bottom,
+          #260000 0px,
+          #260000 3px,
+          #320000 3px,
+          #320000 6px
+        );
+      border-radius: 55px;
+      border: 14px solid #808791;
+      color: #ff4757;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 58px;
+      font-family: "Courier New", monospace;
+      font-weight: 700;
+      letter-spacing: 10px;
+      text-shadow: 0 0 8px rgba(255, 90, 90, 0.9);
+    }
+
+    .ticket {
+      background: #fff;
+      border: 1px solid #8ea0b3;
+      min-height: 240px;
+      padding: 12px;
+      white-space: pre-wrap;
+      font-family: "Courier New", monospace;
+      font-size: 16px;
+      color: #444;
+      overflow: auto;
+    }
+
+    .help {
+      background: #eceff4;
+      border-radius: 14px;
+      padding: 14px 16px;
+      color: #39485b;
+    }
+
+    .help h3 {
+      margin: 0 0 4px;
+      font-size: 13px;
+    }
+
+    .help .small {
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .center-area {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      min-width: 0;
+    }
+
+    .center-top {
+      display: flex;
+      gap: 22px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .keypad-wrap {
+      background: #0e57d8;
+      border-radius: 20px;
+      padding: 14px;
+      width: 260px;
+      flex: 0 0 auto;
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .key {
+      height: 64px;
+      border: none;
+      border-radius: 14px;
+      font-size: 24px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .key.num {
+      background: #f3f3f3;
+      color: #0c52d8;
+    }
+
+    .key.func {
+      background: #e64141;
+      color: #fff;
+    }
+
+    .side-button {
+      margin-top: 40px;
+      flex: 0 0 auto;
+    }
+
+    .open-btn {
+      width: 120px;
+      height: 48px;
+      border: 0;
+      background: #1d9447;
+      color: #fff;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .info-card {
+      background: #f4f4f7;
+      border-radius: 18px;
+      padding: 14px 14px 10px;
+      width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+    }
+
+    .info-card h3 {
+      margin: 0 0 12px;
+      font-size: 15px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar button {
+      border: 0;
+      background: #d9dde3;
+      border-radius: 14px;
+      padding: 9px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      font-size: 12px;
+      table-layout: auto;
+    }
+
+    th, td {
+      border-bottom: 1px solid #d7dde6;
+      padding: 8px 6px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #edf1f5;
+      font-weight: 700;
+    }
+
+    .table-note {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #3f5066;
+    }
+
+    @media (max-width: 980px) {
+      .panel {
+        grid-template-columns: 1fr;
+      }
+
+      .center-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .side-button {
+        margin-top: 0;
+      }
+
+      .open-btn {
+        width: 160px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        width: calc(100vw - 12px);
+        padding: 10px;
+      }
+
+      .panel {
+        padding: 14px;
+        gap: 20px;
+      }
+
+      .brand {
+        font-size: 42px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+      }
+
+      .mini-btn {
+        width: 100%;
+      }
+
+      .top-actions {
+        width: 100%;
+      }
+
+      .visor {
+        font-size: 42px;
+        letter-spacing: 6px;
+      }
+
+      .ticket {
+        font-size: 14px;
+      }
+
+      .keypad-wrap {
+        width: 100%;
+        max-width: 260px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="window-title">MEGALUX</div>
+
+  <div class="app">
+    <div class="topbar">
+      <div>
+        <h1 class="brand">MEGALUX</h1>
+        <div class="subtitle">Sistema para controlar Playa de Estacionamiento</div>
+      </div>
+
+      <div class="top-actions">
+        <button class="mini-btn" id="installBtn">Instalar app</button>
+        <button class="mini-btn" id="fullscreenBtn">Pantalla completa</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="visor-box">
+        <div class="visor-wrap">
+          <div id="visor" class="visor">---</div>
+        </div>
+
+        <div id="ticket" class="ticket">Sin ticket.</div>
+
+        <div class="help">
+          <h3>Uso rápido</h3>
+          <div class="small">Entrada: 0 + 3 números + clase + D</div>
+          <div class="small">Salida: 1 + 3 números + D + D</div>
+          <div class="small">C cancela · # cancela salida · B funciones · A auditoría</div>
+        </div>
+      </div>
+
+      <div class="center-area">
+        <div class="center-top">
+          <div class="keypad-wrap">
+            <div class="keypad" id="keypad"></div>
+          </div>
+
+          <div class="side-button">
+            <button class="open-btn" id="openArchiveBtn">ABRIR ARC...</button>
+          </div>
+        </div>
+
+        <div class="info-card movements-card">
+          <h3>Movimientos</h3>
+
+          <div class="toolbar">
+            <button id="showAllBtn">Todos</button>
+            <button id="showOpenBtn">En playa</button>
+            <button id="showMovesBtn">Entradas/Salidas</button>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Patente</th>
+                <th>Clase</th>
+                <th>Ingreso</th>
+                <th>Salida</th>
+                <th>Min</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Mov</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+
+          <div class="table-note">
+            Guardado local en el navegador.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'megalux_web_data_v1';
+    let deferredPrompt = null;
+
+    const state = {
+      mode: 'ESPERA',
+      patent: '',
+      classBuffer: '',
+      auditCodeBuffer: '',
+      pendingExit: null,
+      currentFilter: 'all',
+      rates: {},
+      auditCode: '47969405',
+      googleUrl: '',
+      movements: []
+    };
+
+    const defaultRate = (clase) => ({
+      clase,
+      tolerancia: 5,
+      cantidadHoras: 5,
+      precioHora: 8,
+      precioMediaHora: 4,
+      precioEstadia: 15,
+      precioEstadia24: 24
+    });
+
+    for (let i = 0; i <= 9; i++) {
+      state.rates[i] = defaultRate(i);
+    }
+
+    const visor = document.getElementById('visor');
+    const ticket = document.getElementById('ticket');
+    const tableBody = document.getElementById('tableBody');
+    const keypad = document.getElementById('keypad');
+
+    const keys = [
+      '1','2','3','A',
+      '4','5','6','B',
+      '7','8','9','C',
+      '*','0','#','D'
+    ];
+
+    keys.forEach(key => {
+      const btn = document.createElement('button');
+      btn.className = 'key ' + (/^[0-9#*]$/.test(key) ? 'num' : 'func');
+      btn.textContent = key;
+      btn.addEventListener('click', () => processKey(key));
+      keypad.appendChild(btn);
+    });
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        rates: state.rates,
+        auditCode: state.auditCode,
+        googleUrl: state.googleUrl,
+        movements: state.movements
+      }));
+    }
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+
+        if (saved.rates) state.rates = saved.rates;
+        if (saved.auditCode) state.auditCode = saved.auditCode;
+        if (saved.googleUrl) state.googleUrl = saved.googleUrl;
+        if (saved.movements) state.movements = saved.movements;
+      } catch (e) {
+        console.error(e);
+      }
+
+      renderTable();
+      setVisor('---');
+    }
+
+    function setVisor(text) {
+      visor.textContent = text;
+    }
+
+    function printTicket(text) {
+      ticket.textContent = text;
+    }
+
+    function now() {
+      const d = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+
+    function nowIso() {
+      return new Date().toISOString();
+    }
+
+    function nextId() {
+      return state.movements.length
+        ? Math.max(...state.movements.map(x => Number(x.id) || 0)) + 1
+        : 1;
+    }
+
+    function openTicketForPatent(pat) {
+      let found = null;
+      for (const m of state.movements) {
+        if (m.patente === pat && m.estado === 'ABIERTO' && m.movimiento === 'ENTRADA') {
+          found = m;
+        }
+      }
+      return found;
+    }
+
+    function carsInPlay() {
+      return state.movements.filter(x => x.estado === 'ABIERTO' && x.movimiento === 'ENTRADA');
+    }
+
+    function cajaTotal() {
+      return state.movements
+        .filter(x => x.movimiento === 'SALIDA')
+        .reduce((a, b) => a + Number(b.total || 0), 0);
+    }
+
+    function calcularImporte(minutos, clase) {
+      const tarifa = state.rates[clase] || defaultRate(clase);
+
+      if (minutos <= tarifa.tolerancia) return 0;
+      if (minutos <= 30) return tarifa.precioMediaHora;
+      if (minutos <= 60) return tarifa.precioHora;
+
+      const horas = Math.ceil(minutos / 60);
+
+      if (horas >= tarifa.cantidadHoras) return tarifa.precioEstadia;
+      return horas * tarifa.precioHora;
+    }
+
+    function entryText(t) {
+      return `******** MEGALUX ********
+MOVIMIENTO : ENTRADA
+TICKET     : ${t.id}
+PATENTE    : ${t.patente}
+CLASE      : ${t.claseTarifa}
+INGRESO    : ${t.ingreso}
+ADELANTADO : ${t.adelantado ? 'SI' : 'NO'}
+ESTADO     : ABIERTO
+************************`;
+    }
+
+    function exitText(t) {
+      return `******** MEGALUX ********
+MOVIMIENTO : SALIDA
+TICKET     : ${t.id}
+PATENTE    : ${t.patente}
+CLASE      : ${t.claseTarifa}
+INGRESO    : ${t.ingreso}
+SALIDA     : ${t.salida}
+MINUTOS    : ${t.minutos}
+TOTAL      : ${Number(t.total).toFixed(2)}
+ESTADO     : CERRADO
+************************`;
+    }
+
+    function resetFlow() {
+      state.mode = 'ESPERA';
+      state.patent = '';
+      state.classBuffer = '';
+      state.auditCodeBuffer = '';
+      state.pendingExit = null;
+      setVisor('---');
+    }
+
+    function processKey(key) {
+      if (key === 'C') {
+        resetFlow();
+        return;
+      }
+
+      if (key === '#' && state.mode === 'SALIDA_CONFIRMAR') {
+        state.pendingExit = null;
+        resetFlow();
+        return;
+      }
+
+      switch (state.mode) {
+        case 'ESPERA': return fromIdle(key);
+        case 'ENTRADA_PATENTE': return entradaPatente(key);
+        case 'ENTRADA_CLASE': return entradaClase(key);
+        case 'ENTRADA_CONFIRMAR': return entradaConfirmar(key);
+        case 'SALIDA_PATENTE': return salidaPatente(key);
+        case 'SALIDA_CONFIRMAR': return salidaConfirmar(key);
+        case 'AUDITORIA_PASS': return auditoriaPass(key);
+        case 'AUDITORIA_MENU': return auditoriaMenu(key);
+        case 'FUNCIONES_MENU': return funcionesB(key);
+      }
+    }
+
+    function fromIdle(key) {
+      if (key === '0') {
+        state.mode = 'ENTRADA_PATENTE';
+        state.patent = '';
+        setVisor('0');
+        return;
+      }
+
+      if (key === '1') {
+        state.mode = 'SALIDA_PATENTE';
+        state.patent = '';
+        setVisor('1');
+        return;
+      }
+
+      if (key === 'B') {
+        state.mode = 'FUNCIONES_MENU';
+        setVisor('B-');
+        return;
+      }
+
+      if (key === 'A') {
+        state.mode = 'AUDITORIA_PASS';
+        state.auditCodeBuffer = '';
+        setVisor('PASS');
+      }
+    }
+
+    function entradaPatente(key) {
+      if (!/^[0-9]$/.test(key)) return;
+
+      if (state.patent.length < 3) {
+        state.patent += key;
+        setVisor('0' + state.patent);
+      }
+
+      if (state.patent.length === 3) {
+        state.mode = 'ENTRADA_CLASE';
+        setVisor('CLASE');
+      }
+    }
+
+    function entradaClase(key) {
+      if (!/^[0-9]$/.test(key)) return;
+
+      state.classBuffer = key;
+      state.mode = 'ENTRADA_CONFIRMAR';
+      setVisor('ENTRA');
+    }
+
+    function entradaConfirmar(key) {
+      if (key !== 'D') return;
+
+      if (openTicketForPatent(state.patent)) {
+        setVisor('OCUP');
+        return;
+      }
+
+      const t = {
+        id: nextId(),
+        patente: state.patent,
+        claseTarifa: Number(state.classBuffer || 1),
+        ingreso: now(),
+        salida: '',
+        ingresoIso: nowIso(),
+        minutos: 0,
+        total: 0,
+        estado: 'ABIERTO',
+        movimiento: 'ENTRADA',
+        adelantado: false
+      };
+
+      state.movements.push(t);
+      saveState();
+      printTicket(entryText(t));
+      renderTable();
+      resetFlow();
+    }
+
+    function salidaPatente(key) {
+      if (!/^[0-9]$/.test(key)) return;
+
+      if (state.patent.length < 3) {
+        state.patent += key;
+        setVisor('1' + state.patent);
+      }
+
+      if (state.patent.length === 3) {
+        const open = openTicketForPatent(state.patent);
+
+        if (!open) {
+          setVisor('NO');
+          state.mode = 'ESPERA';
+          return;
+        }
+
+        state.pendingExit = JSON.parse(JSON.stringify(open));
+        state.mode = 'SALIDA_CONFIRMAR';
+        setVisor('SALE');
+      }
+    }
+
+    function salidaConfirmar(key) {
+      if (key !== 'D') return;
+
+      if (visor.textContent === 'SALE') {
+        const ingreso = new Date(state.pendingExit.ingresoIso);
+        const salida = new Date();
+        let mins = Math.ceil((salida - ingreso) / 60000);
+
+        if (mins <= 0) mins = 1;
+
+        state.pendingExit.minutos = mins;
+        state.pendingExit.total = calcularImporte(mins, state.pendingExit.claseTarifa);
+        state.pendingExit.salida = now();
+        setVisor(Number(state.pendingExit.total).toFixed(2));
+      } else {
+        const t = {
+          ...state.pendingExit,
+          id: nextId(),
+          estado: 'CERRADO',
+          movimiento: 'SALIDA'
+        };
+
+        state.movements.push(t);
+        saveState();
+        printTicket(exitText(t));
+        renderTable();
+        resetFlow();
+      }
+    }
+
+    function auditoriaPass(key) {
+      if (!/^[0-9]$/.test(key)) return;
+
+      if (state.auditCodeBuffer.length < 8) {
+        state.auditCodeBuffer += key;
+      }
+
+      if (state.auditCodeBuffer.length === 8) {
+        if (state.auditCodeBuffer === state.auditCode) {
+          state.mode = 'AUDITORIA_MENU';
+          setVisor('A-');
+        } else {
+          setVisor('ERR');
+          setTimeout(resetFlow, 700);
+        }
+      }
+    }
+
+    function auditoriaMenu(key) {
+      if (key === '1') {
+        printTicket(`******** MEGALUX ********
+AUDITORIA TARIFAS
+FUNCION OCULTA
+************************`);
+        resetFlow();
+        return;
+      }
+
+      if (key === '2') {
+        state.movements = state.movements.filter(x => x.movimiento === 'ENTRADA' && x.estado === 'ABIERTO');
+        saveState();
+        renderTable();
+        printTicket(`******** MEGALUX ********
+BORRADO DE CAJA
+REALIZADO
+************************`);
+        resetFlow();
+        return;
+      }
+
+      if (key === '5') {
+        printTicket(buildMovesList());
+        resetFlow();
+        return;
+      }
+
+      if (key === '7') {
+        const nuevo = prompt('Nuevo código de auditoría (8 dígitos):', state.auditCode);
+        if (nuevo && /^\d{8}$/.test(nuevo)) {
+          state.auditCode = nuevo;
+          saveState();
+          printTicket(`******** MEGALUX ********
+CODIGO ACTUALIZADO
+NUEVO: ${nuevo}
+************************`);
+        }
+        resetFlow();
+        return;
+      }
+
+      if (key === '8') {
+        printTicket('La fecha y hora web usan la del navegador.');
+        resetFlow();
+      }
+    }
+
+    function funcionesB(key) {
+      if (key === '0') {
+        printTicket(`******** MEGALUX ********
+CAJA TOTAL
+${cajaTotal().toFixed(2)}
+************************`);
+      } else if (key === '1') {
+        printTicket(`******** MEGALUX ********
+AUTOS EN PLAYA
+${carsInPlay().length}
+************************`);
+      } else if (key === '2') {
+        printTicket(`******** MEGALUX ********
+HORA ACTUAL
+${now()}
+************************`);
+      } else if (key === '3') {
+        let txt = '******** MEGALUX ********\nAUTOS EN PLAYA\n';
+        const open = carsInPlay();
+
+        open.forEach(t => {
+          txt += `PAT:${t.patente} CL:${t.claseTarifa} ING:${t.ingreso}\n`;
+        });
+
+        if (!open.length) txt += 'SIN AUTOS EN PLAYA\n';
+        txt += '************************';
+        printTicket(txt);
+      } else if (key === '4' || key === '7') {
+        printTicket(buildMovesList());
+      } else if (key === '5') {
+        printTicket(`******** MEGALUX ********
+CAJA PARCIAL
+${cajaTotal().toFixed(2)}
+************************`);
+      }
+
+      resetFlow();
+    }
+
+    function buildMovesList() {
+      let txt = '******** MEGALUX ********\nLISTADO ENTRADA/SALIDA\n';
+
+      state.movements.forEach(t => {
+        txt += `${t.movimiento} PAT:${t.patente} CL:${t.claseTarifa} TOT:${Number(t.total || 0).toFixed(2)}\n`;
+      });
+
+      if (!state.movements.length) txt += 'SIN MOVIMIENTOS\n';
+      txt += '************************';
+      return txt;
+    }
+
+    function renderTable() {
+      tableBody.innerHTML = '';
+
+      let rows = state.movements.slice();
+
+      if (state.currentFilter === 'open') {
+        rows = rows.filter(x => x.estado === 'ABIERTO');
+      }
+
+      if (state.currentFilter === 'moves') {
+        rows = rows.filter(x => x.movimiento === 'ENTRADA' || x.movimiento === 'SALIDA');
+      }
+
+      rows.forEach(t => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${t.id}</td>
+          <td>${t.patente}</td>
+          <td>${t.claseTarifa}</td>
+          <td>${t.ingreso || ''}</td>
+          <td>${t.salida || ''}</td>
+          <td>${t.minutos || 0}</td>
+          <td>${Number(t.total || 0).toFixed(2)}</td>
+          <td>${t.estado}</td>
+          <td>${t.movimiento}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
+
+    function installApp() {
+      if (!deferredPrompt) {
+        alert('La instalación depende del navegador y del servidor web.');
+        return;
+      }
+
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.finally(() => {
+        deferredPrompt = null;
+      });
+    }
+
+    function enterFullscreen() {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    }
+
+    function openArchive() {
+      printTicket(`******** MEGALUX ********
+ARCHIVO
+FUNCION RESERVADA
+************************`);
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+
+    document.getElementById('installBtn').addEventListener('click', installApp);
+    document.getElementById('fullscreenBtn').addEventListener('click', enterFullscreen);
+    document.getElementById('openArchiveBtn').addEventListener('click', openArchive);
+    document.getElementById('showAllBtn').addEventListener('click', () => {
+      state.currentFilter = 'all';
+      renderTable();
+    });
+    document.getElementById('showOpenBtn').addEventListener('click', () => {
+      state.currentFilter = 'open';
+      renderTable();
+    });
+    document.getElementById('showMovesBtn').addEventListener('click', () => {
+      state.currentFilter = 'moves';
+      renderTable();
+    });
+
+    loadState();
+  </script>
+</body>
+</html>
